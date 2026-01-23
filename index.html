@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Termia - The AI Terminal for DevOps</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts: Inter for UI, JetBrains Mono for Code -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        termia: {
+                            bg: '#0B0E14',       
+                            surface: '#181C26',     
+                            accent: '#6366F1',   
+                        }
+                    },
+                    backgroundImage: {
+                        'hero-glow': 'radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0B0E14; color: #E2E8F0; }
+        
+        /* Glassmorphism Navigation */
+        .glass-nav {
+            background: rgba(11, 14, 20, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: rgba(24, 28, 38, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        /* Gradient Text Effect */
+        .text-gradient {
+            background: linear-gradient(135deg, #818cf8 0%, #d8b4fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Nav Dropdown Arrow Indicator */
+        .nav-item-arrow::after {
+            content: '';
+            display: inline-block;
+            width: 0.4em;
+            height: 0.4em;
+            margin-left: 0.3em;
+            border-right: 1.5px solid currentColor;
+            border-bottom: 1.5px solid currentColor;
+            transform: rotate(45deg) translateY(-2px);
+            opacity: 0.6;
+            transition: transform 0.2s;
+        }
+        .nav-item-arrow:hover::after {
+            transform: rotate(45deg) translateY(0px);
+        }
+
+        /* Modal/Popup Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-content {
+            background: #181C26;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden selection:bg-indigo-500/30">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 top-0 glass-nav h-[72px] transition-all duration-300">
+        <div class="max-w-[1400px] mx-auto px-6 h-full flex items-center justify-between">
+            <!-- Left: Logo & Nav Links -->
+            <div class="flex items-center gap-10">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-2 group">
+                    <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded flex items-center justify-center font-bold text-white font-mono shadow-lg shadow-indigo-500/20 group-hover:shadow-indigo-500/40 transition">T</div>
+                    <span class="font-bold text-xl tracking-tight text-white">Termia</span>
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#features" class="nav-item-arrow text-[15px] font-medium text-gray-400 hover:text-white transition">Features</a>
+                    <a href="#" class="nav-item-arrow text-[15px] font-medium text-gray-400 hover:text-white transition">Resources</a>
+                    <a href="#" class="text-[15px] font-medium text-gray-400 hover:text-white transition">Pricing</a>
+                    <!-- Enterprise retained as requested -->
+                    <a href="#" class="text-[15px] font-medium text-gray-400 hover:text-white transition">Enterprise</a>
+                </div>
+            </div>
+
+            <!-- Right: Actions -->
+            <div class="flex items-center gap-6">
+                <!-- Changed 'Contact sales' to 'Support' -->
+                <a href="#support" class="hidden lg:block text-[15px] font-medium text-white hover:text-indigo-300 transition">Support</a>
+                
+                <!-- Download Button (Warp Style: White Button) -->
+                <div class="relative group">
+                    <button id="nav-download-btn" class="bg-white text-black hover:bg-gray-100 px-5 py-2.5 rounded-[4px] text-[15px] font-semibold transition shadow-[0_0_15px_rgba(255,255,255,0.1)] flex items-center gap-2">
+                        <span id="nav-download-text">Download for Windows</span>
+                        <i id="nav-download-icon" class="fa-brands fa-windows"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="relative pt-32 pb-20 sm:pt-48 sm:pb-24 overflow-hidden bg-hero-glow">
+        <div class="relative max-w-7xl mx-auto px-6 text-center z-10">
+            
+            <!-- Version Badge -->
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-semibold mb-8 uppercase tracking-wider">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+                v1.0 Now Available
+            </div>
+            
+            <!-- Headline -->
+            <h1 class="text-5xl sm:text-7xl font-bold tracking-tight mb-6 leading-[1.1]">
+                The terminal with <br/>
+                <span class="text-gradient">DevOps Agents</span> built in
+            </h1>
+            
+            <!-- Subheadline -->
+            <p class="mt-6 text-xl text-gray-400 max-w-2xl mx-auto mb-12 font-light">
+                Switch seamlessly between a traditional CLI and an AI-powered Agent mode. 
+                <br>Plan, execute, and debug on remote hosts using natural language.
+            </p>
+
+            <!-- Download / OS Selection Area -->
+            <div class="flex flex-col items-center gap-6 mb-16">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <!-- Mac Button -->
+                    <a href="#" id="hero-download-mac" class="flex items-center justify-center gap-3 bg-white text-black hover:bg-gray-200 px-8 py-4 rounded-lg text-lg font-bold transition min-w-[240px] shadow-lg shadow-white/10">
+                        <i class="fa-brands fa-apple text-xl"></i>
+                        <span>Download for Mac</span>
+                    </a>
+                    <!-- Windows Button -->
+                    <a href="#" id="hero-download-windows" class="flex items-center justify-center gap-3 bg-[#1e293b] text-white border border-gray-700 hover:border-gray-500 px-8 py-4 rounded-lg text-lg font-bold transition min-w-[240px]">
+                        <i class="fa-brands fa-windows text-xl"></i>
+                        <span>Download for Windows</span>
+                    </a>
+                </div>
+                <!-- Package Managers -->
+                <div class="text-sm text-gray-500">
+                    <span>Also available via:</span>
+                    <span class="ml-2 font-mono text-gray-400 bg-gray-900 px-2 py-1 rounded border border-gray-800">brew install termia</span>
+                    <span class="mx-1">/</span>
+                    <span class="font-mono text-gray-400 bg-gray-900 px-2 py-1 rounded border border-gray-800">winget install termia</span>
+                    <div class="mt-2 text-xs opacity-60">Linux support coming soon</div>
+                </div>
+            </div>
+
+            <!-- Product Showcase Image -->
+            <div class="relative max-w-6xl mx-auto mt-8">
+                <!-- Background Glow behind image -->
+                <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 rounded-xl blur opacity-20"></div>
+                <div class="relative rounded-xl border border-gray-800 shadow-2xl overflow-hidden">
+                    <!-- Main Interface Screenshot -->
+                    <img src="hero页面.png" alt="Termia Interface" class="w-full opacity-90">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature 1: Scenarios (Floating Window) -->
+    <section id="features" class="py-32 bg-[#0B0E14] relative border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center gap-16">
+                <!-- Text Content -->
+                <div class="md:w-1/2 flex flex-col justify-center">
+                    <div class="text-indigo-400 font-mono text-sm mb-4">01. ONBOARDING AGENT</div>
+                    <h2 class="text-4xl font-bold text-white mb-6">Unsure where to start? <br>Let AI guide you.</h2>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-8">
+                        The moment you connect to a new host, Termia's context-aware floating agent suggests relevant DevOps tasks based on the environment.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <!-- Feature List Item -->
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-indigo-900/30 flex items-center justify-center text-indigo-400 shrink-0">
+                                <i class="fa-solid fa-stethoscope"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold">Server Diagnostics</h4>
+                                <p class="text-sm text-gray-500 mt-1">Instantly analyze load averages, IOPS, and memory bottlenecks.</p>
+                            </div>
+                        </div>
+                        <!-- Feature List Item -->
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-purple-900/30 flex items-center justify-center text-purple-400 shrink-0">
+                                <i class="fa-brands fa-docker"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold">Environment Init</h4>
+                                <p class="text-sm text-gray-500 mt-1">One-click setup for Docker, Kubernetes, or Nginx with best practices.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Content -->
+                <div class="md:w-1/2 relative flex items-center justify-center">
+                    <div class="absolute -inset-4 bg-indigo-500/10 rounded-full blur-3xl"></div>
+                    <!-- Floating Window Screenshot -->
+                    <img src="feature1.png" alt="AI Scenarios" class="relative rounded-lg shadow-2xl border border-gray-700 transform hover:scale-[1.02] transition duration-500 w-full h-auto">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature 2: Natural Language Operations -->
+    <section class="py-32 bg-[#0B0E14] relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row-reverse items-center gap-16">
+                <!-- Text Content -->
+                <div class="md:w-1/2 flex flex-col justify-center">
+                    <div class="text-purple-400 font-mono text-sm mb-4">02. NATURAL LANGUAGE OPS</div>
+                    <h2 class="text-4xl font-bold text-white mb-6">Skip the man pages.<br>Just tell us what you need.</h2>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-8">
+                        In Agent mode, describe your task in plain English. AI plans the steps, generates commands, and executes after your approval.
+                    </p>
+                    
+                    <!-- Example Conversation -->
+                    <div class="space-y-3 bg-[#151923] rounded-lg p-5 border border-gray-800">
+                        <div class="flex gap-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-user text-blue-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-300 text-sm">"Show me the top 5 processes by CPU usage"</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-robot text-indigo-400 text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-gray-300 text-sm mb-2">I'll execute this command:</p>
+                                <code class="text-xs text-green-400 bg-black/50 px-3 py-2 rounded block font-mono">ps aux --sort=-%cpu | head -n 6</code>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-user text-blue-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-300 text-sm">"Go ahead"</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex items-start gap-3 text-sm text-gray-500">
+                        <i class="fa-solid fa-lightbulb text-yellow-500 mt-0.5"></i>
+                        <p>AI explains each command and waits for confirmation, keeping you in control.</p>
+                    </div>
+                </div>
+
+                <!-- Visual Content -->
+                <div class="md:w-1/2 relative flex items-center justify-center">
+                    <div class="absolute -inset-4 bg-purple-500/10 rounded-full blur-3xl"></div>
+                    <!-- Chat Interface Screenshot -->
+                    <img src="feature2.png" alt="Natural Language Ops" class="relative rounded-lg shadow-2xl border border-gray-700 transform hover:scale-[1.02] transition duration-500 w-full h-auto">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature 3: Remote AI Execution -->
+    <section class="py-32 bg-[#0B0E14] relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center gap-16">
+                <!-- Text Content -->
+                <div class="md:w-1/2 flex flex-col justify-center">
+                    <div class="text-cyan-400 font-mono text-sm mb-4">03. REMOTE AI EXECUTION</div>
+                    <h2 class="text-4xl font-bold text-white mb-6">AI that understands<br>your remote hosts.</h2>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-8">
+                        Unlike typical terminals, Termia's Agent is context-aware on remote hosts. Get intelligent suggestions and automated execution even over SSH.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <!-- Feature List Item -->
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-cyan-900/30 flex items-center justify-center text-cyan-400 shrink-0">
+                                <i class="fa-solid fa-network-wired"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold">Context Awareness</h4>
+                                <p class="text-sm text-gray-500 mt-1">Auto-detect OS, installed services, and config files on remote machines.</p>
+                            </div>
+                        </div>
+                        <!-- Feature List Item -->
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-blue-900/30 flex items-center justify-center text-blue-400 shrink-0">
+                                <i class="fa-solid fa-gears"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold">Smart Command Adaptation</h4>
+                                <p class="text-sm text-gray-500 mt-1">Generate commands tailored to different distros (Ubuntu/CentOS/Alpine).</p>
+                            </div>
+                        </div>
+                        <!-- Feature List Item -->
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-teal-900/30 flex items-center justify-center text-teal-400 shrink-0">
+                                <i class="fa-solid fa-bolt"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold">Multi-Host Operations</h4>
+                                <p class="text-sm text-gray-500 mt-1">Execute tasks in parallel across multiple servers simultaneously.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Content -->
+                <div class="md:w-1/2 relative flex items-center justify-center">
+                    <div class="absolute -inset-4 bg-cyan-500/10 rounded-full blur-3xl"></div>
+                    <!-- SSH/Remote Connection Screenshot -->
+                    <img src="feature3.png" alt="Remote AI Execution" class="relative rounded-lg shadow-2xl border border-gray-700 transform hover:scale-[1.02] transition duration-500 w-full h-auto">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature 4: Toolbox (Sidebar) -->
+    <section class="py-32 bg-[#0B0E14] relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row-reverse items-center gap-16">
+                 <!-- Text Content -->
+                 <div class="md:w-1/2 flex flex-col justify-center">
+                    <div class="text-pink-400 font-mono text-sm mb-4">04. OPS TOOLBOX</div>
+                    <h2 class="text-4xl font-bold text-white mb-6">Your remote infrastructure, <br>visualized.</h2>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-8">
+                        Stop memorizing <code class="text-indigo-400 bg-gray-900 px-1.5 py-0.5 rounded text-sm">ls</code> flags. Termia provides a visual sidebar for files, scripts, and monitoring that works seamlessly over SSH.
+                    </p>
+                    <ul class="space-y-4 text-gray-300">
+                        <li class="flex items-center gap-3">
+                            <i class="fa-regular fa-file-code text-gray-500"></i>
+                            <span>Built-in Script Library & Notes</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-server text-gray-500"></i>
+                            <span>Real-time Resource Monitoring</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-key text-gray-500"></i>
+                            <span>Environment Variable Manager</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Visual Content -->
+                <div class="md:w-1/2 flex items-center justify-center">
+                     <!-- Sidebar/File Manager Screenshot -->
+                     <img src="feature4.png" alt="Sidebar Features" class="rounded-lg shadow-2xl border border-gray-700 w-full h-auto">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community / Support Section -->
+    <section id="support" class="py-24 relative overflow-hidden">
+        <!-- Background decorative elements -->
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent to-[#0B0E14]"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-indigo-900/10 blur-[100px] rounded-full"></div>
+
+        <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+            <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">Support & Community</h2>
+            <p class="text-xl text-gray-400 mb-10">
+                Whether you're an individual developer or an enterprise team, we're here to help.
+                Join our community to report bugs, suggest features, or just chat.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                <!-- Discord Card -->
+                <a href="#" class="glass-card p-6 rounded-xl hover:bg-white/5 transition group text-left">
+                    <div class="flex items-center justify-between mb-4">
+                        <i class="fa-brands fa-discord text-3xl text-[#5865F2]"></i>
+                        <span class="text-gray-500 text-sm group-hover:text-white transition">Join Server &rarr;</span>
+                    </div>
+                    <h3 class="font-bold text-white text-lg">Community Chat</h3>
+                    <p class="text-gray-500 text-sm mt-2">Get instant help from the team and other users.</p>
+                </a>
+
+                <!-- WeChat Card -->
+                <a href="#" id="wechat-btn" class="glass-card p-6 rounded-xl hover:bg-white/5 transition group text-left">
+                    <div class="flex items-center justify-between mb-4">
+                        <i class="fa-brands fa-weixin text-3xl text-[#07C160]"></i>
+                        <span class="text-gray-500 text-sm group-hover:text-white transition">Join Group &rarr;</span>
+                    </div>
+                    <h3 class="font-bold text-white text-lg">WeChat Community</h3>
+                    <p class="text-gray-500 text-sm mt-2">Connect with Chinese users and get support in Mandarin.</p>
+                </a>
+
+                <!-- GitHub Card -->
+                <a href="#" class="glass-card p-6 rounded-xl hover:bg-white/5 transition group text-left">
+                    <div class="flex items-center justify-between mb-4">
+                        <i class="fa-brands fa-github text-3xl text-white"></i>
+                        <span class="text-gray-500 text-sm group-hover:text-white transition">Report Issues &rarr;</span>
+                    </div>
+                    <h3 class="font-bold text-white text-lg">Bug Tracker</h3>
+                    <p class="text-gray-500 text-sm mt-2">Found a bug? Submit an issue on our GitHub.</p>
+                </a>
+            </div>
+
+            <!-- Simple Email Contact for everyone -->
+            <div class="mt-12">
+                <p class="text-sm text-gray-500 mb-2">Prefer email?</p>
+                <a href="mailto:support@termia.dev" class="text-indigo-400 hover:text-indigo-300 font-medium text-lg">
+                    support@termia.dev
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 bg-[#050608] pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+                <div class="col-span-2">
+                    <div class="flex items-center gap-2 mb-4">
+                        <!-- Logo Icon -->
+                        <div class="w-6 h-6 bg-indigo-600 rounded flex items-center justify-center font-bold text-white text-xs">T</div>
+                        <span class="font-bold text-lg text-white">Termia</span>
+                    </div>
+                    <p class="text-sm text-gray-500 max-w-xs">
+                        The AI-native terminal designed for modern DevOps workflows and infrastructure management.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-4 text-sm">Product</h4>
+                    <ul class="space-y-2 text-sm text-gray-500">
+                        <li><a href="#" class="hover:text-indigo-400">Features</a></li>
+                        <li><a href="#" class="hover:text-indigo-400">Security</a></li>
+                        <li><a href="#" class="hover:text-indigo-400">Pricing</a></li>
+                        <li><a href="#" class="hover:text-indigo-400">Changelog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-4 text-sm">Resources</h4>
+                    <ul class="space-y-2 text-sm text-gray-500">
+                        <li><a href="#" class="hover:text-indigo-400">Documentation</a></li>
+                        <li><a href="#" class="hover:text-indigo-400">API Reference</a></li>
+                        <li><a href="#support" class="hover:text-indigo-400">Community</a></li>
+                        <li><a href="#" class="hover:text-indigo-400">Blog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-4 text-sm">Company</h4>
+                    <ul class="space-y-2 text-sm text-gray-500">
+                        <li><a href="#" class="hover:text-indigo-400">About</a></li>
+                        <li><a href="#" class="hover:text-indigo-400">Enterprise</a></li>
+                        <li><a href="#" class="hover:text-indigo-400">Legal</a></li>
+                        <li><a href="mailto:support@termia.dev" class="hover:text-indigo-400">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-600">
+                <div>&copy; 2026 Termia Inc. All rights reserved.</div>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-gray-400">Privacy Policy</a>
+                    <a href="#" class="hover:text-gray-400">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WeChat QR Code Modal -->
+    <div id="wechat-modal" class="modal-overlay">
+        <div class="modal-content p-8 text-center">
+            <button onclick="closeWeChatModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl transition">&times;</button>
+            <h3 class="text-2xl font-bold text-white mb-4">Join WeChat Community</h3>
+            <p class="text-gray-400 mb-6">Scan the QR code to join our WeChat group</p>
+            <img src="微信群二维码.jpg" alt="WeChat QR Code" class="mx-auto rounded-lg border border-gray-700" style="max-width: 300px;">
+            <p class="text-sm text-gray-500 mt-4">扫描二维码加入微信群</p>
+        </div>
+    </div>
+
+    <script>
+        // Detect user's operating system
+        function detectOS() {
+            const userAgent = window.navigator.userAgent;
+            const platform = window.navigator.platform;
+            const macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'];
+            const windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'];
+            
+            if (macosPlatforms.indexOf(platform) !== -1) {
+                return 'Mac';
+            } else if (windowsPlatforms.indexOf(platform) !== -1) {
+                return 'Windows';
+            }
+            return 'Windows'; // Default to Windows
+        }
+
+        // Update download button based on OS
+        function updateDownloadButton() {
+            const os = detectOS();
+            const navBtn = document.getElementById('nav-download-btn');
+            const navText = document.getElementById('nav-download-text');
+            const navIcon = document.getElementById('nav-download-icon');
+            
+            if (os === 'Mac') {
+                navText.textContent = 'Download for Mac';
+                navIcon.className = 'fa-brands fa-apple';
+            } else {
+                navText.textContent = 'Download for Windows';
+                navIcon.className = 'fa-brands fa-windows';
+            }
+        }
+
+        // Handle download
+        function handleDownload(os) {
+            // Download file paths
+            // TODO: Replace with your GitHub Release URLs after uploading installers
+            const downloadLinks = {
+                'Mac': 'https://github.com/YOUR_USERNAME/YOUR_REPO/releases/download/v0.11.6/Wave-darwin-arm64-0.11.6-beta.1.zip',
+                'Windows': 'https://github.com/YOUR_USERNAME/YOUR_REPO/releases/download/v0.11.6/Wave-win32-x64-0.11.6-beta.2025-12-19.exe'
+            };
+            
+            const downloadUrl = downloadLinks[os];
+            
+            // Create temporary link and trigger download
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = downloadUrl.split('/').pop();
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // WeChat modal functions
+        function openWeChatModal() {
+            document.getElementById('wechat-modal').classList.add('active');
+        }
+
+        function closeWeChatModal() {
+            document.getElementById('wechat-modal').classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('wechat-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeWeChatModal();
+            }
+        });
+
+        // Set up download button event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update nav button on page load
+            updateDownloadButton();
+            const os = detectOS();
+            
+            // Nav download button
+            document.getElementById('nav-download-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                handleDownload(os);
+            });
+            
+            // Hero Mac button
+            document.getElementById('hero-download-mac').addEventListener('click', function(e) {
+                e.preventDefault();
+                handleDownload('Mac');
+            });
+            
+            // Hero Windows button
+            document.getElementById('hero-download-windows').addEventListener('click', function(e) {
+                e.preventDefault();
+                handleDownload('Windows');
+            });
+            
+            // WeChat button
+            document.getElementById('wechat-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                openWeChatModal();
+            });
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeWeChatModal();
+            }
+        });
+    </script>
+
+</body>
+</html>
