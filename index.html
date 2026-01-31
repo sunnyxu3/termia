@@ -181,6 +181,49 @@
             }
         }
 
+        /* Image zoom lightbox - product images only */
+        .img-product-zoom {
+            cursor: zoom-in;
+        }
+        #image-zoom-modal .image-zoom-content {
+            background: transparent;
+            border: none;
+            max-width: none;
+            max-height: none;
+            padding: 2rem;
+            box-shadow: none;
+        }
+        #image-zoom-modal .image-zoom-content img {
+            max-width: 90vw;
+            max-height: 85vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        #image-zoom-modal .image-zoom-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: background 0.2s;
+        }
+        #image-zoom-modal .image-zoom-close:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
         /* Carousel - slide track (right-to-left push) */
         .carousel-wrap {
             position: relative;
@@ -397,8 +440,8 @@
                         <button type="button" class="carousel-arrow prev" data-carousel-prev="hero" aria-label="Previous"><i class="fa-solid fa-chevron-left text-sm"></i></button>
                         <button type="button" class="carousel-arrow next" data-carousel-next="hero" aria-label="Next"><i class="fa-solid fa-chevron-right text-sm"></i></button>
                         <div class="carousel-track" data-carousel-track="hero">
-                            <div class="carousel-slide"><img src="hero_1.png" alt="Termia Interface" class="w-full opacity-90"></div>
-                            <div class="carousel-slide"><img src="hero_2.png" alt="Termia Interface" class="w-full opacity-90"></div>
+                            <div class="carousel-slide"><img src="hero_1.png" alt="Termia Interface" class="w-full opacity-90 img-product-zoom"></div>
+                            <div class="carousel-slide"><img src="hero_2.png" alt="Termia Interface" class="w-full opacity-90 img-product-zoom"></div>
                         </div>
                     </div>
                 </div>
@@ -449,9 +492,9 @@
                             <button type="button" class="carousel-arrow prev" data-carousel-prev="feature1" aria-label="Previous"><i class="fa-solid fa-chevron-left text-sm"></i></button>
                             <button type="button" class="carousel-arrow next" data-carousel-next="feature1" aria-label="Next"><i class="fa-solid fa-chevron-right text-sm"></i></button>
                             <div class="carousel-track" data-carousel-track="feature1">
-                                <div class="carousel-slide"><img src="feature1_1.png" alt="AI-Native & Extensible" class="rounded-lg shadow-2xl border border-gray-700"></div>
-                                <div class="carousel-slide"><img src="feature1_2.png" alt="AI-Native & Extensible" class="rounded-lg shadow-2xl border border-gray-700"></div>
-                                <div class="carousel-slide"><img src="feature1_3.png" alt="AI-Native & Extensible" class="rounded-lg shadow-2xl border border-gray-700"></div>
+                                <div class="carousel-slide"><img src="feature1_1.png" alt="AI-Native & Extensible" class="rounded-lg shadow-2xl border border-gray-700 img-product-zoom"></div>
+                                <div class="carousel-slide"><img src="feature1_2.png" alt="AI-Native & Extensible" class="rounded-lg shadow-2xl border border-gray-700 img-product-zoom"></div>
+                                <div class="carousel-slide"><img src="feature1_3.png" alt="AI-Native & Extensible" class="rounded-lg shadow-2xl border border-gray-700 img-product-zoom"></div>
                             </div>
                         </div>
                         <div class="carousel-dots" data-carousel-dots="feature1"></div>
@@ -499,7 +542,7 @@
                 <div class="md:w-1/2 relative flex flex-col items-center justify-center w-full">
                     <div class="absolute -inset-4 bg-purple-500/10 rounded-full blur-3xl"></div>
                     <div class="relative w-full max-h-[380px] flex justify-center">
-                        <img src="feature2_1.png" alt="Block-Based Workflow" class="w-full rounded-lg shadow-2xl border border-gray-700 object-contain max-h-[380px]">
+                        <img src="feature2_1.png" alt="Block-Based Workflow" class="w-full rounded-lg shadow-2xl border border-gray-700 object-contain max-h-[380px] img-product-zoom">
                     </div>
                 </div>
             </div>
@@ -548,9 +591,9 @@
                             <button type="button" class="carousel-arrow prev" data-carousel-prev="feature3" aria-label="Previous"><i class="fa-solid fa-chevron-left text-sm"></i></button>
                             <button type="button" class="carousel-arrow next" data-carousel-next="feature3" aria-label="Next"><i class="fa-solid fa-chevron-right text-sm"></i></button>
                             <div class="carousel-track" data-carousel-track="feature3">
-                                <div class="carousel-slide"><img src="feature3_1.png" alt="Secure Vault & Visual Dashboard" class="rounded-lg shadow-2xl border border-gray-700"></div>
-                                <div class="carousel-slide"><img src="feature3_2.png" alt="Secure Vault & Visual Dashboard" class="rounded-lg shadow-2xl border border-gray-700"></div>
-                                <div class="carousel-slide"><img src="feature3_3.png" alt="Secure Vault & Visual Dashboard" class="rounded-lg shadow-2xl border border-gray-700"></div>
+                                <div class="carousel-slide"><img src="feature3_1.png" alt="Secure Vault & Visual Dashboard" class="rounded-lg shadow-2xl border border-gray-700 img-product-zoom"></div>
+                                <div class="carousel-slide"><img src="feature3_2.png" alt="Secure Vault & Visual Dashboard" class="rounded-lg shadow-2xl border border-gray-700 img-product-zoom"></div>
+                                <div class="carousel-slide"><img src="feature3_3.png" alt="Secure Vault & Visual Dashboard" class="rounded-lg shadow-2xl border border-gray-700 img-product-zoom"></div>
                             </div>
                         </div>
                         <div class="carousel-dots" data-carousel-dots="feature3"></div>
@@ -596,7 +639,7 @@
                 <!-- Visual Content -->
                 <div class="md:w-1/2 flex items-center justify-center w-full">
                      <div class="w-full max-h-[380px] flex items-center justify-center">
-                         <img src="feature4_1.png" alt="Knowledge & Cloud Sync" class="rounded-lg shadow-2xl border border-gray-700 w-full h-auto max-h-[380px] object-contain">
+                         <img src="feature4_1.png" alt="Knowledge & Cloud Sync" class="rounded-lg shadow-2xl border border-gray-700 w-full h-auto max-h-[380px] object-contain img-product-zoom">
                      </div>
                 </div>
             </div>
@@ -719,6 +762,14 @@
         </div>
     </div>
 
+    <!-- Image zoom lightbox (product images only) -->
+    <div id="image-zoom-modal" class="modal-overlay" role="dialog" aria-label="Enlarge image">
+        <div class="modal-content image-zoom-content" onclick="event.stopPropagation()">
+            <button type="button" class="image-zoom-close" onclick="closeImageZoom()" aria-label="Close">&times;</button>
+            <img id="image-zoom-img" src="" alt="">
+        </div>
+    </div>
+
     <script>
         // Detect user's operating system
         function detectOS() {
@@ -787,8 +838,42 @@
             }
         });
 
-        // Set up download button event listeners
+        // Image zoom lightbox (product images only; WeChat QR excluded)
+        function openImageZoom(src, alt) {
+            var modal = document.getElementById('image-zoom-modal');
+            var img = document.getElementById('image-zoom-img');
+            img.src = src;
+            img.alt = alt || '';
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeImageZoom() {
+            document.getElementById('image-zoom-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        document.getElementById('image-zoom-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeImageZoom();
+            }
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeImageZoom();
+            }
+        });
+
+        // Set up download button event listeners and image zoom
         document.addEventListener('DOMContentLoaded', function() {
+            // Product image click → open lightbox (WeChat QR has no img-product-zoom, so excluded)
+            document.body.addEventListener('click', function(e) {
+                var img = e.target.closest('.img-product-zoom');
+                if (img && img.tagName === 'IMG') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openImageZoom(img.src, img.alt);
+                }
+            });
+
             // Update nav button on page load
             updateDownloadButton();
             const os = detectOS();
