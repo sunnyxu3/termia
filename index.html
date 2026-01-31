@@ -211,6 +211,23 @@
             object-fit: contain;
             display: block;
         }
+        /* Hero carousel: fixed height, dots outside box to avoid shadow bar */
+        .carousel-hero .carousel-wrap {
+            height: 420px;
+            position: relative;
+        }
+        .carousel-hero .carousel-track {
+            height: 100%;
+        }
+        .carousel-hero .carousel-slide {
+            height: 100%;
+        }
+        .carousel-hero .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
         /* Feature carousel: limit height to match copy */
         .carousel-feature .carousel-wrap {
             max-height: 380px;
@@ -221,6 +238,21 @@
         .carousel-feature .carousel-slide img {
             max-height: 380px;
             object-fit: contain;
+        }
+        /* Feature 3: narrower frame to match smaller image (height unchanged) */
+        .carousel-feature-feature3 {
+            max-width: 420px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .carousel-feature-feature3 .carousel-wrap {
+            max-width: 100%;
+        }
+        .carousel-feature-feature3 .carousel-slide img {
+            width: auto;
+            max-width: 100%;
+            margin: 0 auto;
+            display: block;
         }
         /* Arrows - visible on hover */
         .carousel-arrow {
@@ -360,8 +392,8 @@
             <!-- Product Showcase Image (Carousel) -->
             <div class="relative max-w-6xl mx-auto mt-8">
                 <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 rounded-xl blur opacity-20"></div>
-                <div class="relative rounded-xl border border-gray-800 shadow-2xl overflow-hidden">
-                    <div class="carousel-wrap has-arrows" data-carousel="hero">
+                <div class="relative rounded-xl border border-gray-800 shadow-2xl overflow-hidden bg-[#0f1116]">
+                    <div class="carousel-wrap carousel-hero has-arrows" data-carousel="hero">
                         <button type="button" class="carousel-arrow prev" data-carousel-prev="hero" aria-label="Previous"><i class="fa-solid fa-chevron-left text-sm"></i></button>
                         <button type="button" class="carousel-arrow next" data-carousel-next="hero" aria-label="Next"><i class="fa-solid fa-chevron-right text-sm"></i></button>
                         <div class="carousel-track" data-carousel-track="hero">
@@ -369,8 +401,8 @@
                             <div class="carousel-slide"><img src="hero_2.png" alt="Termia Interface" class="w-full opacity-90"></div>
                         </div>
                     </div>
-                    <div class="carousel-dots" data-carousel-dots="hero"></div>
                 </div>
+                <div class="carousel-dots" data-carousel-dots="hero"></div>
             </div>
         </div>
     </div>
@@ -463,20 +495,11 @@
                     </div>
                 </div>
 
-                <!-- Visual Content -->
+                <!-- Visual Content (single image) -->
                 <div class="md:w-1/2 relative flex flex-col items-center justify-center w-full">
                     <div class="absolute -inset-4 bg-purple-500/10 rounded-full blur-3xl"></div>
-                    <div class="relative w-full carousel-feature">
-                        <div class="carousel-wrap has-arrows carousel-feature" data-carousel="feature2">
-                            <button type="button" class="carousel-arrow prev" data-carousel-prev="feature2" aria-label="Previous"><i class="fa-solid fa-chevron-left text-sm"></i></button>
-                            <button type="button" class="carousel-arrow next" data-carousel-next="feature2" aria-label="Next"><i class="fa-solid fa-chevron-right text-sm"></i></button>
-                            <div class="carousel-track" data-carousel-track="feature2">
-                                <div class="carousel-slide"><img src="feature2_1.png" alt="Block-Based Workflow" class="rounded-lg shadow-2xl border border-gray-700"></div>
-                                <div class="carousel-slide"><img src="feature2_2.png" alt="Block-Based Workflow" class="rounded-lg shadow-2xl border border-gray-700"></div>
-                                <div class="carousel-slide"><img src="feature2_3.png" alt="Block-Based Workflow" class="rounded-lg shadow-2xl border border-gray-700"></div>
-                            </div>
-                        </div>
-                        <div class="carousel-dots" data-carousel-dots="feature2"></div>
+                    <div class="relative w-full max-h-[380px] flex justify-center">
+                        <img src="feature2_1.png" alt="Block-Based Workflow" class="w-full rounded-lg shadow-2xl border border-gray-700 object-contain max-h-[380px]">
                     </div>
                 </div>
             </div>
@@ -520,7 +543,7 @@
                 <!-- Visual Content -->
                 <div class="md:w-1/2 relative flex flex-col items-center justify-center w-full">
                     <div class="absolute -inset-4 bg-cyan-500/10 rounded-full blur-3xl"></div>
-                    <div class="relative w-full carousel-feature">
+                    <div class="relative w-full carousel-feature carousel-feature-feature3">
                         <div class="carousel-wrap has-arrows carousel-feature" data-carousel="feature3">
                             <button type="button" class="carousel-arrow prev" data-carousel-prev="feature3" aria-label="Previous"><i class="fa-solid fa-chevron-left text-sm"></i></button>
                             <button type="button" class="carousel-arrow next" data-carousel-next="feature3" aria-label="Next"><i class="fa-solid fa-chevron-right text-sm"></i></button>
